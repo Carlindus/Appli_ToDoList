@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+
+  <link href="css\main.css" rel="stylesheet">
+
+  <title>To Do List</title>
+</head>
+
+<body>
+
+  <div id="toDoListContainer">
+    <header>
+      <div id="header">
+        <h1>Choses à faire <span id="tasksNumber"></span></h1>
+      </div>
+    </header>
+
+    <main>
+      <ul id="listItems">
+        <!-- <li class="todo">un programme JS</li>
+          <li class="important">Vanuxeem</li>
+          <li class="todo">trier mes habits</li> -->
+      </ul>
+      <div id="newItemButton">
+        <button id="showForm" class="button" type="button" name="addItem">Ajouter une tâche</button>
+      </div>
+      <form id="newItemForm" action="index.html" method="post" autocomplete="off">
+        <input type="text" id="textItem" placeholder="Intitulé de la tâche">
+        <input type="submit" id="submitItem" class="button" value="Ajouter"><br>
+        <label><input id=important type="checkbox" name="important" value="important">tâche importante</label>
+      </form>
+      <div id="save">
+        <button id="saveButton" class="button" type="button" name="saveList">Sauvegarder la liste</button>
+      </div>
+
+    </main>
+
+    <footer>
+      <p>produced by <a href="www.carlindusdesign.com">Carlindus Design</a> - 2018</p>
+    </footer>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="js/myscript.js"></script>
+  <!-- <script src="data/todolist-jsonp.js?callback=showData"></script> -->
+
+</body>
+
+</html>
