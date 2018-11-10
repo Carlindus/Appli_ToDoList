@@ -1,113 +1,164 @@
 @import url(http://fonts.googleapis.com/css?family=Oswald);
 
+.red{
+  background: red;
+}
 
 /*********************/
 /******* SETUP *******/
 /*********************/
+*, *:before, *:after{
+    box-sizing: border-box;
+}
 
-body{
+body {
   box-sizing: border-box;
   width: 100vw;
   font-family: 'Oswald', 'Futura', sans-serif;
   background-color: #000;
   color: #f5f5f5;
 }
-a{
+
+a {
   text-decoration: none;
   color: inherit;
 }
 
-#toDoListContainer{
+#toDoListContainer {
   max-width: 40vw;
-  margin:0 auto;
+  margin: 0 auto;
   background-color: #333;
   margin-top: 5vmin;
+  overflow: hidden;
 }
 
 /********************/
 /******* HEADER *******/
 /********************/
-
-#header{
-  padding:2vmin 0;
+#header {
+  padding: 2vmin 0;
 }
-    h1{
-      font-size: 2rem;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
-        h1 span {
-          background-color: #fff;
-          color: #000;
-          font-size: 2rem;
-          text-align: center;
-          letter-spacing: 0;
-          display: inline-block;
-          border-radius: 50%;
-          padding: 0 15px;
-        }
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+h1 span {
+  background-color: #fff;
+  color: #000;
+  font-size: 2rem;
+  text-align: center;
+  letter-spacing: 0;
+  display: inline-block;
+  border-radius: 50%;
+  padding: 0 15px;
+}
 
 /********************/
 /******* MAIN *******/
 /********************/
-
 /******* LIST *******/
-ul{
+ul {
   padding: 0;
   margin: 0 0 2vmin 0;
 }
-    li{
-      list-style: none;
-      border-top: 1px solid #222;
-      font-size: 1.5rem;
-      padding:15px;
-      user-select: none;
-      cursor: pointer;
-    }
-        li.todo{
-          background-color: rgb(60, 130, 90);
-          text-shadow: 2px 2px 1px rgb(15, 85, 45);
-        }
-        li.important{
-          background-color: rgb(130, 60, 60);
-          text-shadow: 2px 2px 1px rgb(85, 15, 15);
+div.list-container{
+  position: relative;
+  height:60px;
+  width:100%;
+}
+div.list-container button{
+  width:40px;
+  height:40px;
+  padding: 0;
+  margin:10px;
+  cursor: pointer;
+}
+li {
+  z-index:2;
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:60px;
+  list-style: none;
+  border-top: 1px solid #222;
+  font-size: 1.5rem;
+  line-height: 30px;
+  padding: 15px;
+  user-select: none;
+  cursor: pointer;
+  transition: transform 200ms;
+}
 
-        }
-        li.complete{
-          background-color: rgb(110, 110, 110);
-          text-shadow: 2px 2px 1px rgb(65, 65, 65);
-        }
-        li.bin{
-          background: rgb(189, 190, 195);
-          padding: 15px 0;
-        }
-          li a{
-            z-index :10;
-            display: inline-block;
-            width : 20px;
-            padding: 0 15px;
-          }
-          li a:nth-of-type(2){
-            float: right;
-          }
-          li a img{
-            width:100%;
-            height: auto;
-          }
+li.todo {
+  background-color: rgb(60, 130, 90);
+  text-shadow: 2px 2px 1px rgb(15, 85, 45);
+}
 
+li.important {
+  background-color: rgb(130, 60, 60);
+  text-shadow: 2px 2px 1px rgb(85, 15, 15);
+}
+
+li.complete {
+  background-color: rgb(110, 110, 110);
+  text-shadow: 2px 2px 1px rgb(65, 65, 65);
+}
+
+li.bin {
+  background: rgb(189, 190, 195);
+  padding: 15px 0;
+}
+li.selected {
+  transform: translateX(120px);
+  border-radius: 15px;
+}
+
+li a {
+  z-index: 10;
+  display: inline-block;
+  width: 20px;
+  padding: 0 15px;
+}
+
+li a:nth-of-type(2) {
+  float: right;
+}
+
+li a img {
+  width: 100%;
+  height: auto;
+}
 
 /******* FORM *******/
-#newItemButton, form{
+#newItemButton,
+#save{
+  width:100%;
+  display: flex;
+  justify-content: flex-end;
+}
+form {
   min-height: 20px;
-  padding: 0 20px 20px 20px;}
+  padding: 0 20px 20px 20px;
+}
+form div{
+  display: flex;
+
+}
+form div input[type='text']{
+  flex:1;
 }
 
 label {
   color: #fff;
   display: block;
   margin: 10px 0 10px 0;
-  font-size: 24px;}
+  font-size: 24px;
+}
 
 input[type='text'], input[type='password'], textarea {
   background-color: #999;
@@ -116,7 +167,8 @@ input[type='text'], input[type='password'], textarea {
   width: 96%;
   padding: 4px 6px;
   border: 1px solid #999;
-  border-radius: 8px;}
+  border-radius: 8px;
+}
 
 input[type='submit'], a.add, button, a.show {
   background-color: #cb6868;
@@ -124,48 +176,70 @@ input[type='submit'], a.add, button, a.show {
   border-radius: 8px;
   border: none;
   padding: 8px 10px;
-  margin-top: 10px;
+  margin: 5px;
+  /* margin-top: 10px; */
   font-family: 'Oswald', 'Futura', sans-serif;
   font-size: 18px;
   text-decoration: none;
-  text-transform: uppercase;}
+  text-transform: uppercase;
+  cursor: pointer;
 
-input[type='submit'], a.add, button {
-  float: right;}
+}
+
+/* input[type='submit'], a.add, button {
+  float: right;
+} */
 
 input[type='text']:focus, input[type='password']:focus, textarea:focus {
   border: 1px solid #fff;
   background-color: #fff;
-  outline: none;}
+  outline: none;
+}
 
 input[type='submit']:hover, a.add:hover, a.show:hover {
   background-color: #000;
   color: #fff;
-  cursor: pointer;}
+  cursor: pointer;
+}
 
+::-webkit-input-placeholder {
+  color: #403c3b;
+  font-family: arial, sans-serif;
+}
 
-::-webkit-input-placeholder {color: #403c3b; font-family: arial, sans-serif;}
-:-moz-placeholder { /* Firefox 18- */ color: #403c3b; font-family: arial, sans-serif;}
-::-moz-placeholder {  /* Firefox 19+ */ color: #403c3b; font-family: arial, sans-serif;}
-:-ms-input-placeholder { color: #403c3b; font-family: arial, sans-serif;}
+:-moz-placeholder {
+  /* Firefox 18- */
+  color: #403c3b;
+  font-family: arial, sans-serif;
+}
 
+::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #403c3b;
+  font-family: arial, sans-serif;
+}
 
+:-ms-input-placeholder {
+  color: #403c3b;
+  font-family: arial, sans-serif;
+}
 
 /**********************/
 /******* FOOTER *******/
 /**********************/
-
-footer{
+footer {
   display: flex;
   justify-content: center;
-  margin-top:2vmin;
-  clear:both;
+  margin-top: 2vmin;
+  clear: both;
 }
-  footer p{
-    font-size: 0.8rem;
-    /* display: inline-block; */
-    padding: 10px;
-  }
-      footer p a{
-        text-decoration: underline;
-      }
+
+footer p {
+  font-size: 0.8rem;
+  /* display: inline-block; */
+  padding: 10px;
+}
+
+footer p a {
+  text-decoration: underline;
+}

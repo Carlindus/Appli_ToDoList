@@ -1,182 +1,252 @@
 'use strict';
 
 ////////// PROBLEMS //////////////
-// comment enregistrer la liste sur serveur?
+
 
 // SETUP
-var $list, $newItemButton, $newItemForm;
-$list = $('#listItems');
-$newItemButton = $('#newItemButton');
-$newItemForm = $('#newItemForm');
+var $list,
+  $newItemButton,
+  $newItemForm;
+
+function init() { // functions launched on load
+  returnData();
+  hideForm();
+  updateCountTask();
+}
+
+function hideForm() {
+  $newItemForm.hide();
+  $newItemButton.show();
+}
+
+function displayForm() {
+  $newItemButton.hide();
+  $newItemForm.show();
+}
 
 
-// Save list items on server
-function saveData() {
-var $items = $('#listItems li');
+// ---------------------------------
+// SERVER REQUESTS
+// ---------------------------------
 
-var listItems = [];
-for (var i = 0; i < $items.length; i++) {
-  listItems[i] = {
-    name: $($items[i]).text(),
-    status: $($items[i]).attr("class")
-  }
-};
+
+function saveData() { // Save list items on server
+  var $items = $('#listItems li');
+
+  var listItems = [];
+  for (var i = 0; i < $items.length; i++) {
+    listItems[i] = {
+      name: $($items[i]).text(),
+      status: $($items[i]).attr("class")
+    }
+  };
 
   $.post(
-    'https://carlindusdesign.fr/data/saveTodo.php',
-    {listItems}
+    'https://carlindusdesign.fr/data/saveTodo.php', {
+      listItems
+    }
   );
 }
 
-// Return list Items saved on server
-$.get(
-  'https://carlindusdesign.fr/data/getTodo.php',
-  function(data) {
-    showData(data)
-  },
-  "json"
-);
+function returnData() { // Return list Items saved on server
+  $.get(
+    'https://carlindusdesign.fr/data/getTodo.php',
+    function(data) {
+      showData(data)
+    },
+    'json'
+  );
+}
 
-// LOAD TASKS IN MEMORY
-function showData(data) {
+function showData(data) { // Load tasks in memory
   var newContent = '';
+
   for (var i = 0; i < data.listItems.length; i++) {
     console.log(i);
-    newContent = '<li class="';
+    newContent = '<div class="list-container"><li class="';
     newContent += data.listItems[i].status;
     newContent += '">';
     newContent += data.listItems[i].name;
-    newContent += '</li>';
+    newContent += '</li></div>';
     // Update each item in memory to the list
     $list.append(newContent);
   };
+}
+
+function addLineItem(textItem) {
+  checkStatus();
+  $list.prepend('<div class="list-container"><li class="' + checkStatus() + '">' + textItem + '</li></div>');
+  updateCountTask();
 };
 
-// when document is ready
+function checkStatus() {
+  var $important = $('#newItemForm input[name="important"]');
+  var statusItem = '';
+
+  if ($important.is(':checked')) {
+    statusItem = 'important';
+  } else {
+    statusItem = 'todo';
+  };
+  return statusItem;
+};
+
+function updateCountTask() {
+  var tasksNumber = $('li').not('.complete').length;
+  $('#tasksNumber').text(tasksNumber);
+  console.log('nombre task : ' + tasksNumber);
+};
+
+
 $(function() {
 
-  // ADD A NEW ITEM
-  $newItemButton.show();
-  $newItemForm.hide();
+  $list = $('#listItems');
+  $newItemButton = $('#newItemButton');
+  $newItemForm = $('#newItemForm');
 
-  // Add event on Display form button
-  $('#showForm').on('click', function() {
-    $newItemButton.hide();
-    $newItemForm.show();
+  // ---------------------------------
+  // ADD EVENT ON BUTTONS
+  // ---------------------------------
+
+  $('#showForm').on('click', function() { // Add task button
+    displayForm()
+    $('#listItems li').removeClass('selected');
   });
 
-  // Add item to the list in the browser and update counter
-  function addListItem(event) {
-    event.preventDefault();
-    var $important = $('#newItemForm input[name="important"]');
-    var textItem = $('input[type="text"]').val();
-    var statusItem = '';
-
-    if ($important.is(':checked')) {
-      statusItem = 'important';
-      $important.attr('checked', false); // ?? NE DECOCHE PAS LA CHECKBOX
-    } else {
-      statusItem = 'todo';
-    }
-    // add new item to the list
-    $list.append('<li class="' + statusItem + '">' + textItem + '</li>');
-    // Clear input
-    //$('input[type="text"]').val('');
-    // Update counter
-    countTask();
-    // post to the server new item
-    var item = 'test new item add';
-    // $.post('https://carlindusdesign.fr/data/todolist-jsonp.js?callback=showData', item, function(data) {
-    //   addDataItem(data);
-    // });
-  };
-
-  // Add event on submit button
-  $newItemForm.on('submit', function(e) {
+  $newItemForm.on('submit', function(e) { // Submit task button
     e.preventDefault();
-    if ($('input[type="text"]').val() !== '') {
-      addListItem(e);
-      $newItemForm[0].reset();
-    }
-  })
+    var textItem = $('input[type="text"]').val();
 
-  // Count task number
-  function countTask() {
-    var tasksNumber = $('li').not('.complete').length;
-    $('#tasksNumber').text(tasksNumber);
+    if (textItem !== '') {
+      addLineItem(textItem);
+      $newItemForm[0].reset();
+    };
+  });
+
+  $('#saveButton').on('click', function(e) { // save list button
+    e.preventDefault();
+    saveData();
+  });
+
+
+
+  // ---------------------------------
+  // ACTION BUTTONS
+  // --------------------------------
+
+  function getCompleteItem($li) {
+    var $newLi;
+    $li.addClass('complete');
+    $li.removeClass('selected');
+    $newLi = $li.parent().clone();
+    $list.append($newLi);
+    $li.parent().remove();
   };
 
-  countTask();
 
-$('#saveButton').on('click', function(){
-  saveData();
-});
-  // ADD event on Items
-  $list.on('click', 'li', function() {
-    var $this = $(this);
-    var prevClass = $this.attr('class');
-    var complete = $this.hasClass('complete');
-    var textItem = $this.text();
-    var $bin = $('li.bin'); // list class=complete is selected
+  function cancelAction($li) {
+    var textItem = $li.text();
+    var prevClass = $li.attr('class');
+    $li.parent().remove();
+    var $newContainer = $list.prepend('<div class="list-container"><li class="' + prevClass + '">' + textItem + '</li><div>');
+    $newContainer.find('li').removeClass('complete selected');
+    // $list.children('.bin').removeClass('complete bin');
+    updateCountTask()
+  };
 
-    // remove class bin if others have this class
-    if ($bin.length > 0 && !$this.hasClass('bin')) {
-      var textBin = $bin.text();
-      $bin.html(textBin);
-      console.log('li.Bin');
-      $bin.removeClass('bin');
-    }
-
-    if (!complete) { // if no-complete, change the class to complete
-      $this.remove();
-      $list.append('<li class="' + prevClass + ' complete">' + textItem + '</li>');
-    } else {
-
-
-      $this.addClass('bin');
-      var content = ''; // content of li.complete item (class=bin)
-      content += '<a href="#" class="cancel"><img src="img/icon_cancel.svg" alt="flêche de retour arrière" title="ajouter à la liste des tâches" /></a>';
-      content += '<span>' + textItem + '</span>';
-      content += '<a href="#" class="suppr"><img src="img/icon_suppr.svg" alt="supprimer la tâche" title="supprimer la tâche" /></a>'
-      $this.html(content);
-
-      console.log($this.children('span'));
-
-      $this.children('span').on('click', function(e) {
-        e.stopPropagation();
-        $this.html(textItem);
-        $this.removeClass('bin');
-      });
-
-    };
-
-    countTask();
-  });
-
-  // event on cancel Button
-  $list.on('click', '.cancel', function(event) {
-    event.preventDefault();
-    var $this = $(this).parent("li");
-    var textItem = $this.text();
-    var prevClass = $this.attr('class');
-    $this.remove();
-    $list.prepend('<li class="' + prevClass + '">' + textItem + '</li>');
-    $list.children('.bin').removeClass('complete bin');
-    countTask();
-  });
-
-  // event on delete button
-  $list.on('click', '.suppr', function(event) {
-    event.preventDefault();
-    var $this = $(this).parent("li");
-    $this.animate({
+  function deleteItem($button) {
+    var $lineRemove = $button.parent(".list-container");
+    $lineRemove.animate({
       opacity: 0,
       paddingLeft: '+=180'
     }, 500, 'swing', function() {
-      $this.remove();
+      $lineRemove.remove();
     });
+  };
+
+  function checkSelected($li) {
+    console.log($li);
+    if ($li.hasClass('selected')) {
+      $li.toggleClass("selected");
+    } else {
+      $('#listItems li').removeClass('selected');
+      $li.toggleClass("selected");
+    }
+  };
+
+  // ADD event on Items
+  $list.on('click', 'li', function() {
+    var $this = $(this);
+
+    checkSelected($this);
+    var complete = $this.hasClass('complete');
+
+    if (!checkButtons($this)) {
+      if (!complete) {
+        addDoneButton($this);
+        addDeleteButton($this);
+        console.log('class non complete');
+      } else {
+        addUndoButton($this);
+        addDeleteButton($this);
+        console.log('class complete');
+      };
+    }
+    hideForm();
   });
 
 
-  // Last brackets
+  function addToDoButtons(icon, action) {
+    var $checkButton = document.createElement("button");
+    var $checkButtonIcon = document.createElement("i");
+    $checkButton.classList.add("fas", icon, action);
+
+    $checkButton.appendChild($checkButtonIcon);
+    return $checkButton
+  };
+
+  function checkButtons($li) {
+    var $buttons = $li.parent().find('button');
+    if ($buttons.length) {
+      return true;
+    } else {
+      return false;
+    };
+  };
+
+  function addDeleteButton($li) {
+    var $deleteButton = addToDoButtons("fa-trash-alt", "delete");
+    $li.parent().prepend($deleteButton);
+
+    $list.on('click', '.delete', function(e) {
+      e.preventDefault();
+      deleteItem($(this));
+    });
+  };
+
+  function addDoneButton($li) {
+    var $doneButton = addToDoButtons("fa-check", "done");
+    $li.parent().prepend($doneButton);
+
+    $list.on('click', '.done', function(e) {
+      e.preventDefault();
+      console.log('done');
+      getCompleteItem($li);
+    });
+  };
+
+  function addUndoButton($li) {
+    var $undoButton = addToDoButtons("fa-redo-alt", "undo");
+    $li.parent().prepend($undoButton);
+
+    $list.on('click', '.undo', function(e) {
+      e.preventDefault();
+      console.log('undo');
+      cancelAction($li);
+    });
+  };
+
+
+  init();
+
 });
