@@ -6,7 +6,8 @@
 // SETUP
 var $list,
   $newItemButton,
-  $newItemForm;
+  $newItemForm,
+  $thisLiContainer;
 
 function init() { // functions launched on load
   returnData();
@@ -29,11 +30,11 @@ function displayForm() {
 // SERVER REQUESTS
 // ---------------------------------
 
+// Save list items on server
+function saveData() {
+  var $items = $('#listItems li'),
+    listItems = [];
 
-function saveData() { // Save list items on server
-  var $items = $('#listItems li');
-
-  var listItems = [];
   for (var i = 0; i < $items.length; i++) {
     listItems[i] = {
       name: $($items[i]).text(),
@@ -48,7 +49,8 @@ function saveData() { // Save list items on server
   );
 }
 
-function returnData() { // Return list Items saved on server
+// Return list Items saved on server
+function returnData() {
   $.get(
     'https://carlindusdesign.fr/data/getTodo.php',
     function(data) {
@@ -58,11 +60,11 @@ function returnData() { // Return list Items saved on server
   );
 }
 
-function showData(data) { // Load tasks in memory
+// Load tasks in memory
+function showData(data) {
   var newContent = '';
 
   for (var i = 0; i < data.listItems.length; i++) {
-    console.log(i);
     newContent = '<div class="list-container"><li class="';
     newContent += data.listItems[i].status;
     newContent += '">';
@@ -71,13 +73,14 @@ function showData(data) { // Load tasks in memory
     // Update each item in memory to the list
     $list.append(newContent);
   };
+  updateCountTask()
 }
 
 function addLineItem(textItem) {
   checkStatus();
   $list.prepend('<div class="list-container"><li class="' + checkStatus() + '">' + textItem + '</li></div>');
   updateCountTask();
-};
+}
 
 function checkStatus() {
   var $important = $('#newItemForm input[name="important"]');
@@ -89,31 +92,164 @@ function checkStatus() {
     statusItem = 'todo';
   };
   return statusItem;
-};
+}
 
 function updateCountTask() {
   var tasksNumber = $('li').not('.complete').length;
   $('#tasksNumber').text(tasksNumber);
-  console.log('nombre task : ' + tasksNumber);
-};
+}
 
+// ---------------------------------
+// ACTION of BUTTONS
+// --------------------------------
+
+function getCompleteItem($button) {
+  var $newLi,
+    $thisLiContainer = $button.parent(),
+    $li = $button.siblings('li');
+
+  $li.addClass('complete').removeClass('selected');
+  $newLi = $thisLiContainer.clone();
+  $list.append($newLi);
+  $thisLiContainer.remove();
+
+  updateCountTask()
+
+}
+
+function cancelAction($button) {
+  var $newContainer = [],
+    $li = $button.siblings('li'),
+    textItem = $li.text(),
+    prevClass = $li.attr('class');
+
+  $newContainer = $list.prepend('<div class="list-container"><li class="' + prevClass + '">' + textItem + '</li><div>');
+  $newContainer.find('li').removeClass('complete selected');
+  $button.parent().remove();
+
+  updateCountTask()
+}
+
+function deleteItem($button) {
+  var $lineRemove = $button.parent(".list-container");
+
+  $lineRemove.animate({
+    opacity: 0,
+    paddingLeft: '+=180'
+  }, 500, 'swing', function() {
+    $lineRemove.remove();
+  });
+  
+  updateCountTask()
+
+}
+
+// ---------------------------------
+// CHECK ACTIONS
+// --------------------------------
+
+function checkSelected($li) {
+
+  if ($li.hasClass('selected')) {
+    $li.toggleClass("selected");
+  } else {
+    $('#listItems li').removeClass('selected');
+    $li.toggleClass("selected");
+  }
+}
+
+
+// ---------------------------------
+// CREATE BUTTONS
+// --------------------------------
+
+function addToDoButtons(icon, action) {
+  var $checkButton = document.createElement("button"),
+    $checkButtonIcon = document.createElement("i");
+
+  $checkButton.classList.add("fas", icon, action);
+  $checkButton.appendChild($checkButtonIcon);
+  return $checkButton
+}
+
+function addDeleteButton($thisLiContainer) {
+  var $deleteButton = addToDoButtons("fa-trash-alt", "delete");
+
+  $thisLiContainer.prepend($deleteButton);
+
+  $list.on('click', '.delete', function(e) {
+    e.preventDefault();
+    deleteItem($(this));
+  });
+}
+
+function addDoneButton($thisLiContainer) {
+  var $doneButton = addToDoButtons("fa-check", "done");
+
+  $thisLiContainer.prepend($doneButton);
+
+  $list.on('click', '.done', function(e) {
+    e.preventDefault();
+    getCompleteItem($(this));
+  });
+}
+
+function addUndoButton($thisLiContainer) {
+  var $undoButton = addToDoButtons("fa-redo-alt", "undo");
+
+  $thisLiContainer.prepend($undoButton);
+
+  $list.on('click', '.undo', function(e) {
+    e.preventDefault();
+    cancelAction($(this));
+  });
+}
+
+
+
+// ---------------------------------
+// WHEN DOCUMENT READY
+// --------------------------------
 
 $(function() {
 
   $list = $('#listItems');
   $newItemButton = $('#newItemButton');
   $newItemForm = $('#newItemForm');
+  $thisLiContainer = $(this).parent();
 
   // ---------------------------------
-  // ADD EVENT ON BUTTONS
-  // ---------------------------------
+  // ADD EVENTS on LIST and BUTTONS
+  // --------------------------------
 
-  $('#showForm').on('click', function() { // Add task button
+  // Event - show buttons on the list
+  $list.on('click', 'li', function() {
+    var $this = $(this),
+      $thisLiContainer = $this.parent(),
+      complete = $this.hasClass('complete'); // boolean
+
+    checkSelected($this);
+    $thisLiContainer.find('button').remove();
+
+
+    // if (!checkButtons($thisLiContainer)) {
+    if (!complete) {
+      addDoneButton($thisLiContainer);
+      addDeleteButton($thisLiContainer);
+    } else {
+      addUndoButton($thisLiContainer);
+      addDeleteButton($thisLiContainer);
+    };
+  });
+
+  // Event - show form to add task
+  $('#showForm').on('click', function() {
     displayForm()
     $('#listItems li').removeClass('selected');
   });
 
-  $newItemForm.on('submit', function(e) { // Submit task button
+  // Event - Submit task
+  $newItemForm.on('submit', function(e) {
     e.preventDefault();
     var textItem = $('input[type="text"]').val();
 
@@ -123,128 +259,12 @@ $(function() {
     };
   });
 
-  $('#saveButton').on('click', function(e) { // save list button
+  // Event - save list
+  $('#saveButton').on('click', function(e) {
     e.preventDefault();
     saveData();
-  });
-
-
-
-  // ---------------------------------
-  // ACTION BUTTONS
-  // --------------------------------
-
-  function getCompleteItem($li) {
-    var $newLi;
-    $li.addClass('complete');
-    $li.removeClass('selected');
-    $newLi = $li.parent().clone();
-    $list.append($newLi);
-    $li.parent().remove();
-  };
-
-
-  function cancelAction($li) {
-    var textItem = $li.text();
-    var prevClass = $li.attr('class');
-    $li.parent().remove();
-    var $newContainer = $list.prepend('<div class="list-container"><li class="' + prevClass + '">' + textItem + '</li><div>');
-    $newContainer.find('li').removeClass('complete selected');
-    // $list.children('.bin').removeClass('complete bin');
-    updateCountTask()
-  };
-
-  function deleteItem($button) {
-    var $lineRemove = $button.parent(".list-container");
-    $lineRemove.animate({
-      opacity: 0,
-      paddingLeft: '+=180'
-    }, 500, 'swing', function() {
-      $lineRemove.remove();
-    });
-  };
-
-  function checkSelected($li) {
-    console.log($li);
-    if ($li.hasClass('selected')) {
-      $li.toggleClass("selected");
-    } else {
-      $('#listItems li').removeClass('selected');
-      $li.toggleClass("selected");
-    }
-  };
-
-  // ADD event on Items
-  $list.on('click', 'li', function() {
-    var $this = $(this);
-
-    checkSelected($this);
-    var complete = $this.hasClass('complete');
-
-    if (!checkButtons($this)) {
-      if (!complete) {
-        addDoneButton($this);
-        addDeleteButton($this);
-        console.log('class non complete');
-      } else {
-        addUndoButton($this);
-        addDeleteButton($this);
-        console.log('class complete');
-      };
-    }
     hideForm();
   });
-
-
-  function addToDoButtons(icon, action) {
-    var $checkButton = document.createElement("button");
-    var $checkButtonIcon = document.createElement("i");
-    $checkButton.classList.add("fas", icon, action);
-
-    $checkButton.appendChild($checkButtonIcon);
-    return $checkButton
-  };
-
-  function checkButtons($li) {
-    var $buttons = $li.parent().find('button');
-    if ($buttons.length) {
-      return true;
-    } else {
-      return false;
-    };
-  };
-
-  function addDeleteButton($li) {
-    var $deleteButton = addToDoButtons("fa-trash-alt", "delete");
-    $li.parent().prepend($deleteButton);
-
-    $list.on('click', '.delete', function(e) {
-      e.preventDefault();
-      deleteItem($(this));
-    });
-  };
-
-  function addDoneButton($li) {
-    var $doneButton = addToDoButtons("fa-check", "done");
-    $li.parent().prepend($doneButton);
-
-    $list.on('click', '.done', function(e) {
-      e.preventDefault();
-      console.log('done');
-      getCompleteItem($li);
-    });
-  };
-
-  function addUndoButton($li) {
-    var $undoButton = addToDoButtons("fa-redo-alt", "undo");
-    $li.parent().prepend($undoButton);
-
-    $list.on('click', '.undo', function(e) {
-      e.preventDefault();
-      console.log('undo');
-      cancelAction($li);
-    });
-  };
 
 
   init();
