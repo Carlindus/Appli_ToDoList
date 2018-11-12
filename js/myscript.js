@@ -118,13 +118,17 @@ function getCompleteItem($button) {
 }
 
 function cancelAction($button) {
+  var thisAttribute = $button.next('li').text();
+
   var $newContainer = [],
-    $li = $button.siblings('li'),
+    $li = $button.next('li'),
     textItem = $li.text(),
-    prevClass = $li.attr('class');
+    prevClass;
+
+  $li.removeClass('complete selected');
+  prevClass = $li.attr('class');
 
   $newContainer = $list.prepend('<div class="list-container"><li class="' + prevClass + '">' + textItem + '</li><div>');
-  $newContainer.find('li').removeClass('complete selected');
   $button.parent().remove();
 
   updateCountTask()
@@ -139,7 +143,7 @@ function deleteItem($button) {
   }, 500, 'swing', function() {
     $lineRemove.remove();
   });
-  
+
   updateCountTask()
 
 }
@@ -177,7 +181,7 @@ function addDeleteButton($thisLiContainer) {
 
   $thisLiContainer.prepend($deleteButton);
 
-  $list.on('click', '.delete', function(e) {
+  $deleteButton.addEventListener('click', function(e) {
     e.preventDefault();
     deleteItem($(this));
   });
@@ -188,7 +192,7 @@ function addDoneButton($thisLiContainer) {
 
   $thisLiContainer.prepend($doneButton);
 
-  $list.on('click', '.done', function(e) {
+  $doneButton.addEventListener('click', function(e) {
     e.preventDefault();
     getCompleteItem($(this));
   });
@@ -198,8 +202,7 @@ function addUndoButton($thisLiContainer) {
   var $undoButton = addToDoButtons("fa-redo-alt", "undo");
 
   $thisLiContainer.prepend($undoButton);
-
-  $list.on('click', '.undo', function(e) {
+  $undoButton.addEventListener('click', function(e) {
     e.preventDefault();
     cancelAction($(this));
   });
@@ -223,9 +226,9 @@ $(function() {
   // --------------------------------
 
   // Event - show buttons on the list
-  $list.on('click', 'li', function() {
-    var $this = $(this),
-      $thisLiContainer = $this.parent(),
+  $list.on('click', 'div', function() {
+    var $this = $(this).children('li'),
+      $thisLiContainer = $(this),
       complete = $this.hasClass('complete'); // boolean
 
     checkSelected($this);
