@@ -1,20 +1,56 @@
-@import url(http://fonts.googleapis.com/css?family=Oswald);
-
-.red{
-  background: red;
+Kalam@font-face {
+  font-family: 'Kalam';
+  src: url('../font/Kalam-Light.eot');
+  src: url('../font/Kalam-Light.eot?#iefix') format('embedded-opentype'),
+    url('../font/Kalam-Light.woff2') format('woff2'),
+    url('../font/Kalam-Light.woff') format('woff'),
+    url('../font/Kalam-Light.ttf') format('truetype');
+  font-weight: Light;
+  font-style: normal;
 }
+
+@font-face {
+  font-family: 'Kalam';
+  src: url('../font/Kalam-Bold.eot');
+  src: url('../font/Kalam-Bold.eot?#iefix') format('embedded-opentype'),
+    url('../font/Kalam-Bold.woff2') format('woff2'),
+    url('../font/Kalam-Bold.woff') format('woff'),
+    url('../font/Kalam-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Kalam';
+  src: url('../font/Kalam-Regular.eot');
+  src: url('../font/Kalam-Regular.eot?#iefix') format('embedded-opentype'),
+    url('../font/Kalam-Regular.woff2') format('woff2'),
+    url('../font/Kalam-Regular.woff') format('woff'),
+    url('../font/Kalam-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html{
+  --cid-Dpurple : #412d63;
+  --cid-Lpurple : #573d85;
+  --cid-Yellow : #f0d214;
+  --cid-Dgrey : #414141;
+  --cid-Lgrey :#6e6e6e;
+}
+
 
 /*********************/
 /******* SETUP *******/
 /*********************/
-*, *:before, *:after{
-    box-sizing: border-box;
+*, *:before, *:after {
+  box-sizing: border-box;
 }
 
 body {
   box-sizing: border-box;
   width: 100vw;
-  font-family: 'Oswald', 'Futura', sans-serif;
+  font-family: 'Kalam', 'Futura', sans-serif;
   background-color: #000;
   color: #f5f5f5;
 }
@@ -27,7 +63,7 @@ a {
 #toDoListContainer {
   max-width: 40vw;
   margin: 0 auto;
-  background-color: #333;
+  background-color: var(--cid-Dpurple);
   margin-top: 5vmin;
   overflow: hidden;
 }
@@ -40,21 +76,30 @@ a {
 }
 
 h1 {
+  position: relative;
+  width: 100%;
   font-size: 2rem;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: .1em;
 }
 
-h1 span {
-  background-color: #fff;
-  color: #000;
-  font-size: 2rem;
+h1>span {
+  position: relative;
+}
+
+h1 #tasksNumber {
+  position: absolute;
+  top: -5px;
+  right: -35px;
+  height: 30px;
+  width: 30px;
+  line-height: 34px;
+  background-color: #f0d214;
+  color: #333;
+  font-size: 15px;
   text-align: center;
-  letter-spacing: 0;
-  display: inline-block;
   border-radius: 50%;
-  padding: 0 15px;
 }
 
 /********************/
@@ -65,25 +110,26 @@ ul {
   padding: 0;
   margin: 0 0 2vmin 0;
 }
-div.list-container{
+
+div.list-container {
   position: relative;
-  height:60px;
-  width:100%;
+  height: 60px;
+  width: 100%;
 }
-div.list-container button{
-  width:40px;
-  height:40px;
-  padding: 0;
-  margin:10px;
+
+div.list-container button {
+  width: 50px;
+  height: 50px;
   cursor: pointer;
 }
+
 li {
-  z-index:2;
+  z-index: 2;
   position: absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:60px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
   list-style: none;
   border-top: 1px solid #222;
   font-size: 1.5rem;
@@ -95,24 +141,27 @@ li {
 }
 
 li.todo {
-  background-color: rgb(60, 130, 90);
-  text-shadow: 2px 2px 1px rgb(15, 85, 45);
+  background-color: #695096;
+  text-shadow: 2px 2px 1px #412d63;
 }
 
 li.important {
-  background-color: rgb(130, 60, 60);
-  text-shadow: 2px 2px 1px rgb(85, 15, 15);
+  color: rgb(65, 65, 65);
+  background-color: rgb(240, 210, 20);
+  text-shadow: 2px 2px 1px rgb(200, 175, 0);
 }
 
 li.complete {
-  background-color: rgb(110, 110, 110);
-  text-shadow: 2px 2px 1px rgb(65, 65, 65);
+  color:#666;
+  background-color: #333;
+  text-shadow: 2px 2px 1px #222;
 }
 
 li.bin {
   background: rgb(189, 190, 195);
   padding: 15px 0;
 }
+
 li.selected {
   transform: translateX(120px);
   border-radius: 15px;
@@ -136,68 +185,69 @@ li a img {
 
 /******* FORM *******/
 #newItemButton,
-#save{
-  width:100%;
+#save {
+  width: 100%;
   display: flex;
   justify-content: flex-end;
 }
+
 form {
   min-height: 20px;
-  padding: 0 20px 20px 20px;
 }
-form div{
-  display: flex;
 
+form div {
+  display: flex;
 }
-form div input[type='text']{
-  flex:1;
+
+form div input[type='text'] {
+  flex: 1;
 }
 
 label {
   color: #fff;
   display: block;
-  margin: 10px 0 10px 0;
+  margin: 0px 5px;
   font-size: 24px;
+  user-select: none;
 }
 
-input[type='text'], input[type='password'], textarea {
+input[type='text'] {
   background-color: #999;
   color: #333;
   font-size: 24px;
-  width: 96%;
-  padding: 4px 6px;
+  width: 100%;
   border: 1px solid #999;
   border-radius: 8px;
+  padding: 4px 6px;
+  margin-left: 5px;
 }
 
-input[type='submit'], a.add, button, a.show {
-  background-color: #cb6868;
-  color: #f3dad1;
+input[type='submit'], button {
+  background-color: #412d63;
+  color: #fff;
   border-radius: 8px;
-  border: none;
+  border: 1px solid var(--cid-Lpurple);
   padding: 8px 10px;
   margin: 5px;
-  /* margin-top: 10px; */
-  font-family: 'Oswald', 'Futura', sans-serif;
+  font-family: 'Kalam', 'Futura', sans-serif;
   font-size: 18px;
   text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
-
+  transition: all 200ms;
 }
 
-/* input[type='submit'], a.add, button {
-  float: right;
-} */
-
-input[type='text']:focus, input[type='password']:focus, textarea:focus {
+button.done, button.undo{
+  margin-left: 5px;
+}
+input[type='text']:focus {
   border: 1px solid #fff;
   background-color: #fff;
   outline: none;
 }
 
-input[type='submit']:hover, a.add:hover, a.show:hover {
-  background-color: #000;
+input[type='submit']:hover, button:hover {
+  background-color: #573d85;
   color: #fff;
   cursor: pointer;
 }
