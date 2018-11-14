@@ -102,6 +102,11 @@ h1 #tasksNumber {
   border-radius: 50%;
 }
 
+#selectors{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
 /********************/
 /******* MAIN *******/
 /********************/
@@ -151,7 +156,7 @@ li.important {
   text-shadow: 2px 2px 1px rgb(200, 175, 0);
 }
 
-li.complete {
+li.done {
   color:#666;
   background-color: #333;
   text-shadow: 2px 2px 1px #222;
@@ -191,15 +196,15 @@ li a img {
   justify-content: flex-end;
 }
 
-form {
+#newItemForm {
   min-height: 20px;
 }
 
-form div {
+#newItemForm div {
   display: flex;
 }
 
-form div input[type='text'] {
+#newItemForm div input[type='text'] {
   flex: 1;
 }
 
