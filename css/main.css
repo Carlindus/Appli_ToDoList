@@ -31,14 +31,13 @@ Kalam@font-face {
   font-style: normal;
 }
 
-html{
-  --cid-Dpurple : #412d63;
-  --cid-Lpurple : #573d85;
-  --cid-Yellow : #f0d214;
-  --cid-Dgrey : #414141;
-  --cid-Lgrey :#6e6e6e;
+html {
+  --cid-Dpurple: #412d63;
+  --cid-Lpurple: #573d85;
+  --cid-Yellow: #f0d214;
+  --cid-Dgrey: #414141;
+  --cid-Lgrey: #6e6e6e;
 }
-
 
 /*********************/
 /******* SETUP *******/
@@ -102,11 +101,51 @@ h1 #tasksNumber {
   border-radius: 50%;
 }
 
-#selectors{
+#selectors {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 }
+
+#selectors label {
+  z-index: 2;
+  position: relative;
+  width: 20%;
+  text-align: center;
+  padding: 3px 6px;
+  margin-bottom: 15px;
+}
+
+#selectors input {
+  visibility: hidden;
+  display: block;
+  height: 0;
+  width: 0;
+  position: absolute;
+  overflow: hidden;
+}
+
+#selectors label span {
+z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #412d63;
+color: #fff;
+border-radius: 8px;
+border: 1px solid var(--cid-Lpurple);
+  display: inline-block;
+  cursor: pointer;
+}
+
+#selectors label [type=checkbox]:checked+span {
+  /* <-- style its checked state */
+  background-color: #573d85;
+  color: #fff;
+}
+
 /********************/
 /******* MAIN *******/
 /********************/
@@ -157,7 +196,7 @@ li.important {
 }
 
 li.done {
-  color:#666;
+  color: #666;
   background-color: #333;
   text-shadow: 2px 2px 1px #222;
 }
@@ -242,9 +281,10 @@ input[type='submit'], button {
   transition: all 200ms;
 }
 
-button.done, button.undo{
+button.done, button.undo {
   margin-left: 5px;
 }
+
 input[type='text']:focus {
   border: 1px solid #fff;
   background-color: #fff;

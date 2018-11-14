@@ -93,7 +93,7 @@ function checkStatusBoxes() {
     $statusboxes.push($statusbox);
   });
   console.log($statusboxes); // Comment utiliser ce tableau pour faire les actions si dessous?
-  return $statusboxes;
+  //return $statusboxes;
 
 
   if ($('#selectAll').is(':checked')) { // réduire cela avec le tableau
