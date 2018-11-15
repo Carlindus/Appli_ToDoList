@@ -1,0 +1,33 @@
+@font-face {
+    font-family: 'Kalam';
+    src: url('Kalam-Light.eot');
+    src: url('Kalam-Light.eot?#iefix') format('embedded-opentype'),
+        url('Kalam-Light.woff2') format('woff2'),
+        url('Kalam-Light.woff') format('woff'),
+        url('Kalam-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Kalam';
+    src: url('Kalam-Bold.eot');
+    src: url('Kalam-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Kalam-Bold.woff2') format('woff2'),
+        url('Kalam-Bold.woff') format('woff'),
+        url('Kalam-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Kalam';
+    src: url('Kalam-Regular.eot');
+    src: url('Kalam-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Kalam-Regular.woff2') format('woff2'),
+        url('Kalam-Regular.woff') format('woff'),
+        url('Kalam-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+

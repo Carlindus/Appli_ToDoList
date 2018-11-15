@@ -27,16 +27,11 @@ function displayForm() {
   $newItemForm.show();
 }
 
-function createPopupUserName() {
-  console.log('createpopup01');
-}
-
 // ---------------------------------
 // USER IDENTIFICATION
 // ---------------------------------
 
 function createPopupUserName() {
-  console.log('createpopup02');
   var $newDiv, $newDivContent, userName;
 
   $newDiv = $('<div>');
@@ -51,11 +46,8 @@ function createPopupUserName() {
   $('#toDoListContainer').append($newDiv);
 
   var $userNameForm = $('#userNameForm');
-  console.log($userNameForm);
-  // $userNameSubmit.addEventListener('submit', function(e) {
   $userNameForm.on('submit', function(e) {
     e.preventDefault();
-    console.log('submitName');
     getUserName();
     $newDiv.remove();
   });
@@ -73,7 +65,7 @@ function getUserName(e) {
 // ---------------------------------
 
 // Save list items
-function saveData() {
+function formatData() {
   var $items = $('#listItems li'),
     listItems = [];
 
@@ -83,6 +75,7 @@ function saveData() {
       status: $($items[i]).attr("class")
     }
   };
+  return listItems;
 }
 
 function showData(data) {
@@ -178,7 +171,7 @@ function getEventCheckboxes() {
 
 // Send list items saved to the server
 function sendData() {
-  saveData();
+  var listItems = formatData();
   $.post(
     'https://carlindusdesign.fr/data/saveTodo.php', {
       listItems
@@ -188,7 +181,6 @@ function sendData() {
 
 // Return list Items saved on server
 function returnData(userName) {
-  // console.log(userName);
   $.get(
     'https://carlindusdesign.fr/data/getTodo.php',
     function(data) {
@@ -372,8 +364,8 @@ $(function() {
   // Event - save list
   $('#saveButton').on('click', function(e) {
     e.preventDefault();
-    saveData();
     hideForm();
+    sendData();
   });
 
   init();
