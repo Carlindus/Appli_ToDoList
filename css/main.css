@@ -47,11 +47,12 @@ html {
 }
 
 body {
-  box-sizing: border-box;
   width: 100vw;
   font-family: 'Kalam', 'Futura', sans-serif;
   background-color: #000;
   color: #f5f5f5;
+  padding: 0;
+  margin: 0;
 }
 
 a {
@@ -60,11 +61,41 @@ a {
 }
 
 #toDoListContainer {
+  position: relative;
   max-width: 40vw;
   margin: 0 auto;
   background-color: var(--cid-Dpurple);
   margin-top: 5vmin;
   overflow: hidden;
+}
+
+/********************/
+/******* Popup *******/
+/********************/
+.popup {
+  z-index: 100;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 500px;
+  height: 200px;
+  border: 1px solid var(--cid-Dpurple);
+  background-color: var(--cid-Lpurple);
+  padding: 20px;
+}
+
+.popup p, .popup input {
+  margin: 5px !important;
+}
+.popup p{
+  width:100%;
+}
+.popup input {
+  display: block;
 }
 
 /********************/
@@ -119,29 +150,28 @@ h1 #tasksNumber {
 #selectors input {
   visibility: hidden;
   display: block;
-  height: 0;
   width: 0;
+  height: 0;
   position: absolute;
   overflow: hidden;
 }
 
 #selectors label span {
-z-index: -1;
+  z-index: -1;
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
   background-color: #412d63;
-color: #fff;
-border-radius: 8px;
-border: 1px solid var(--cid-Lpurple);
+  color: #fff;
+  border-radius: 8px;
+  border: 1px solid var(--cid-Lpurple);
   display: inline-block;
   cursor: pointer;
 }
 
 #selectors label [type=checkbox]:checked+span {
-  /* <-- style its checked state */
   background-color: #573d85;
   color: #fff;
 }
@@ -293,6 +323,7 @@ input[type='text']:focus {
 
 input[type='submit']:hover, button:hover {
   background-color: #573d85;
+  border: 1px solid var(--cid-Dpurple);
   color: #fff;
   cursor: pointer;
 }
