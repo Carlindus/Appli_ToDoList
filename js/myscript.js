@@ -7,11 +7,11 @@
 var $list,
   $newItemButton,
   $newItemForm,
-  $thisLiContainer;
+  $thisLiContainer,
+  userName;
 
 function init() { // functions launched on load
-  // createPopupUserName();
-  returnData();
+  createPopupUserName();
   hideForm();
   getEventCheckboxes();
   updateCountTask();
@@ -31,8 +31,14 @@ function displayForm() {
 // USER IDENTIFICATION
 // ---------------------------------
 
+function onPopupFormSubmit() {
+  userName = getUserName();
+  returnData(userName);
+  $('#userNameTitle').html(userName);
+}
+
 function createPopupUserName() {
-  var $newDiv, $newDivContent, userName;
+  var $newDiv, $newDivContent;
 
   $newDiv = $('<div>');
   $newDiv.id = 'userNamePopup';
@@ -48,16 +54,16 @@ function createPopupUserName() {
   var $userNameForm = $('#userNameForm');
   $userNameForm.on('submit', function(e) {
     e.preventDefault();
-    getUserName();
+    onPopupFormSubmit();
     $newDiv.remove();
   });
 }
 
-function getUserName(e) {
-
+function getUserName() {
   var $userNameInput = $('#userNameInput');
   var userName = $userNameInput.val();
-  returnData(userName);
+
+  return userName;
 }
 
 // ---------------------------------
@@ -66,8 +72,10 @@ function getUserName(e) {
 
 // Save list items
 function formatData() {
-  var $items = $('#listItems li'),
-    listItems = [];
+  var $items, listItems, usersList;
+
+  $items = $('#listItems li');
+  listItems = [];
 
   for (var i = 0; i < $items.length; i++) {
     listItems[i] = {
@@ -75,11 +83,16 @@ function formatData() {
       status: $($items[i]).attr("class")
     }
   };
-  return listItems;
+  usersList = {
+    userName: userName,
+    listItems: listItems
+  }
+  return usersList;
 }
 
 function showData(data) {
   var newContent = '';
+  console.log(data);
 
   for (var i = 0; i < data.listItems.length; i++) {
     newContent = '<div class="list-container"><li class="';
@@ -132,7 +145,7 @@ function checkStatusBoxes() {
 
 function filterTasks(statusboxes) {
   var i;
-  for (i=0 ; i < statusboxes.length ; i++) {
+  for (i = 0; i < statusboxes.length; i++) {
     if (!statusboxes[i].checked) {
       $('#listItems li.' + statusboxes[i].class).parent().hide();
     } else {
@@ -171,10 +184,11 @@ function getEventCheckboxes() {
 
 // Send list items saved to the server
 function sendData() {
-  var listItems = formatData();
+  console.log(userName);
+  var usersList = formatData();
   $.post(
     'https://carlindusdesign.fr/data/saveTodo.php', {
-      listItems
+      usersList
     }
   );
 }
@@ -182,7 +196,9 @@ function sendData() {
 // Return list Items saved on server
 function returnData(userName) {
   $.get(
-    'https://carlindusdesign.fr/data/getTodo.php',
+    'https://carlindusdesign.fr/data/getTodo.php', {
+      userName
+    },
     function(data) {
       showData(data);
       checkStatusBoxes();
@@ -241,9 +257,9 @@ function deleteItem($button) {
     paddingLeft: '+=180'
   }, 500, 'swing', function() {
     $lineRemove.remove();
+    updateCountTask()
   });
 
-  updateCountTask()
 
 }
 
