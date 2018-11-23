@@ -14,7 +14,6 @@ function init() { // functions launched on load
   createPopupUserName();
   hideForm();
   getEventCheckboxes();
-  updateCountTask();
 }
 
 function hideForm() {
@@ -33,9 +32,10 @@ function displayForm() {
 
 function onPopupFormSubmit() {
   userName = getUserName();
+  $('#userNameTitle').html(userName + '<span id="tasksNumber"></span>');
   returnData(userName);
-  $('#userNameTitle').html(userName);
-}
+  updateCountTask();
+  }
 
 function createPopupUserName() {
   var $newDiv, $newDivContent;

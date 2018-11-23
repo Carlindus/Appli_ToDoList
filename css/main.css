@@ -80,7 +80,6 @@ a {
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   width: 500px;
   height: 200px;
   border: 1px solid var(--cid-Dpurple);
@@ -88,16 +87,27 @@ a {
   padding: 20px;
 }
 
+.popup form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.popup form input[type="text"] {
+  width: auto;
+}
+
 .popup p, .popup input {
   margin: 5px !important;
 }
-.popup p{
-  width:100%;
-}
-.popup input {
-  display: block;
+
+.popup p {
+  /* width:100%; */
 }
 
+/* .popup input {
+  display: block;
+} */
 /********************/
 /******* HEADER *******/
 /********************/
@@ -106,19 +116,19 @@ a {
 }
 
 h1 {
-  position: relative;
   width: 100%;
   font-size: 2rem;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: .1em;
+  padding: 0 15px;
 }
 
-h1>span {
+#userNameTitle {
   position: relative;
 }
 
-h1 #tasksNumber {
+#tasksNumber {
   position: absolute;
   top: -5px;
   right: -35px;
@@ -130,6 +140,7 @@ h1 #tasksNumber {
   font-size: 15px;
   text-align: center;
   border-radius: 50%;
+  margin-left: 10px;
 }
 
 #selectors {
