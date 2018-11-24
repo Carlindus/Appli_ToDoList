@@ -101,13 +101,6 @@ a {
   margin: 5px !important;
 }
 
-.popup p {
-  /* width:100%; */
-}
-
-/* .popup input {
-  display: block;
-} */
 /********************/
 /******* HEADER *******/
 /********************/
@@ -157,9 +150,9 @@ h1 {
 #selectors label {
   display: block;
   position: relative;
-  width: 45%;
-max-width: unset;
-min-width: fit-content;
+  width: 40%;
+  max-width: unset;
+  min-width: fit-content;
   border: 2px solid #412d63;
   border-radius: 100px;
   color: #fff;
@@ -174,7 +167,7 @@ min-width: fit-content;
 }
 
 #selectors label::before {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   top: 10px;
@@ -186,18 +179,22 @@ min-width: fit-content;
   transition: background-color .2s;
 }
 
-#selectors label:hover, input:focus + label {
+#selectors label:hover, input:focus+label {
   box-shadow: 0 0 20px rgba(0, 0, 0, .6);
 }
 
-#selectors input:checked + label {
+#selectors input:checked+label {
   background-color: #412d63;
 }
 
-#selectors input:checked + label::before {
+#selectors input:checked+label::before {
+  content: "\2714";
+  font-size: 0.8rem;
+  color: #f0d214;
+  text-align: center;
+  line-height: 20px;
   background-color: var(--cid-Lpurple);
 }
-
 
 /********************/
 /******* MAIN *******/
@@ -304,7 +301,8 @@ label {
   color: #fff;
   display: block;
   margin: 0px 5px;
-  font-size: 1.3rem; /* 24/16 */
+  font-size: 1.3rem;
+  /* 24/16 */
   user-select: none;
 }
 
@@ -385,7 +383,6 @@ footer {
 
 footer p {
   font-size: 0.8rem;
-  /* display: inline-block; */
   padding: 10px;
 }
 
